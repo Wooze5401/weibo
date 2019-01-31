@@ -8,6 +8,25 @@ use Illuminate\Support\Facades\Auth;
 
 class UsersController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth', [
+            'except' => ['show', 'create', 'store']
+        ]);
+
+        $this->middleware('guest', [
+            'only' => ['create']
+        ]);
+    }
+
+
+    public function index()
+    {
+        $users = User::query()->paginate(10);
+
+        return view('users.index', compact('users'));
+    }
+
     public function create()
     {
         return view('users.create');
@@ -41,14 +60,17 @@ class UsersController extends Controller
 
     public function edit(User $user)
     {
+        $this->authorize('update', $user);
         return view('users.edit', compact('user'));
     }
 
     public function update(Request $request, User $user)
     {
+        $this->authorize('update', $user);
+
         $this->validate($request, [
             'name' => 'required|max:50',
-            'password' => 'nullable|confirm|min:6'
+            'password' => 'nullable|confirmed|min:6'
         ]);
 
         $data['name'] = $request->input('name');
@@ -62,6 +84,14 @@ class UsersController extends Controller
 
         session()->flash('success', '编辑成功');
         return redirect()->route('users.show', $user->id);
+    }
+
+    public function destroy(User $user)
+    {
+        $this->authorize('destroy', $user);
+        $user->delete();
+        session()->flash('success', '成功删除用户!');
+        return back();
     }
 
 
