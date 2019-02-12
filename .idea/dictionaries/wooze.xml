@@ -4,6 +4,7 @@
       <w>csrf</w>
       <w>gravatar</w>
       <w>signup</w>
+      <w>unfollow</w>
       <w>weibo</w>
     </words>
   </dictionary>

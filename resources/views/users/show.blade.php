@@ -8,6 +8,12 @@
                     <section class="user_info">
                         @include('users._user_info', ['user' => $user])
                     </section>
+                    @if (Auth::check())
+                        @include('users._follow_form')
+                    @endif
+                    <section class="stats mt-2">
+                        @include('users._stats', ['user' => $user])
+                    </section>
                     <section class="status">
                         @if ($statuses->count() > 0)
                             <ul class="list-unstyled">
